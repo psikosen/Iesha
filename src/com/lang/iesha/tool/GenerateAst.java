@@ -28,7 +28,7 @@ public static void main(String[] args) throws IOException {
 	String path = outputDir + "/" + baseName + ".java";
 	PrintWriter writer = new PrintWriter(path, "UTF-8");
 	
-	writer.println("package com.lang.iesha;");
+	writer.println("package outputfiles;");
 	writer.println();
 	writer.println("import java.util.List;");
 	writer.println(); 
@@ -38,17 +38,32 @@ public static void main(String[] args) throws IOException {
 
 	writer.println("abstract class " + baseName + " {");
 	
+	defineVistor(writer, baseName, types);
+	
 	for(String type: types) {
 		String className = type.split(":")[0].trim();
 		String fields = type.split(":")[1].trim();
 		defineType(writer,baseName, className, fields);
 	}
 	
-	writer.println("}");
+	writer.println();
+	writer.println("  abstract <R> R accept(Visitor<R> visitor);");
+	
 	writer.close();
   }
 
-  private static void defineType(PrintWriter writer, String baseName, String className, String fieldList) {
+  private static void defineVistor(PrintWriter writer, String baseName, List<String> types) {
+	  writer.println("   interface Vistor<R> {"); 
+	  
+	  for (String type : types) {
+		String typeName = type.split(":")[0].trim();
+		writer.println("   R visit" + typeName + baseName + "(" + typeName + " " + baseName.toLowerCase() + ");");
+	  }
+
+		writer.println("  }");
+}
+
+private static void defineType(PrintWriter writer, String baseName, String className, String fieldList) {
 	 writer.println("   static class " + className + " extends " + baseName + "  {");
 	 
 	 writer.println("    " + className + "(" + fieldList + ")  {");
@@ -68,6 +83,13 @@ public static void main(String[] args) throws IOException {
 	 }
 	 
 	 writer.println("   }");
+	 
+    //Visitor pattern
+     writer.println();
+	 writer.println("    @Override");
+	 writer.println("   <R> R accept(Visitor<R> visitor) {");
+	 writer.println("    return visitor.visit" + className + baseName + "(this);");
+ 	 writer.println("   }"); 
   }
 	
 }
