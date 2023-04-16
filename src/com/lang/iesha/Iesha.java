@@ -49,7 +49,7 @@ public class Iesha {
 	}
 
 	public static void error(int line, String string) {
-		// TODO Auto-generated method stub
+		System.out.println("There is an error on line: " + line + " error: " + string);
 		
 	}
 }

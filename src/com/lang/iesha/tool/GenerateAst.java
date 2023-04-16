@@ -16,7 +16,7 @@ public static void main(String[] args) throws IOException {
 	  }
 	  String outputDir = args[0];
 	  
-	  defineAst(outputDir, "Expr", Arrays.asList(
+	  defineAst(outputDir, "Expr1", Arrays.asList(
 			  "Binary  : Expr left, Token operator, Expr right",
 			  "Grouping  : Expr expression",
 			  "Literal   : Object value",
@@ -39,7 +39,10 @@ public static void main(String[] args) throws IOException {
 	writer.println("abstract class " + baseName + " {");
 	
 	defineVistor(writer, baseName, types);
-	
+
+    writer.println();
+    writer.println("  // Nested " + baseName + " classes here...");
+    
 	for(String type: types) {
 		String className = type.split(":")[0].trim();
 		String fields = type.split(":")[1].trim();
@@ -47,20 +50,21 @@ public static void main(String[] args) throws IOException {
 	}
 	
 	writer.println();
-	writer.println("  abstract <R> R accept(Visitor<R> visitor);");
-	
+	writer.println("  abstract <R> R accept(Visitor<R> visitor);"); 
+	writer.println("   }"); 
 	writer.close();
   }
 
   private static void defineVistor(PrintWriter writer, String baseName, List<String> types) {
-	  writer.println("   interface Vistor<R> {"); 
+	  writer.println("   interface Visitor<R> {"); 
 	  
 	  for (String type : types) {
 		String typeName = type.split(":")[0].trim();
 		writer.println("   R visit" + typeName + baseName + "(" + typeName + " " + baseName.toLowerCase() + ");");
 	  }
-
-		writer.println("  }");
+ 
+		writer.println();
+		writer.println("  }"); 
 }
 
 private static void defineType(PrintWriter writer, String baseName, String className, String fieldList) {
@@ -81,15 +85,14 @@ private static void defineType(PrintWriter writer, String baseName, String class
 	 for (String field: fields) {
 	      writer.println("   final " + field + ";");	
 	 }
-	 
-	 writer.println("   }");
-	 
+	  
     //Visitor pattern
      writer.println();
 	 writer.println("    @Override");
 	 writer.println("   <R> R accept(Visitor<R> visitor) {");
 	 writer.println("    return visitor.visit" + className + baseName + "(this);");
- 	 writer.println("   }"); 
-  }
+ 	 writer.println("   }");  
+	 writer.println("  }"); 
+  } 
 	
 }

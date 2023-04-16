@@ -8,16 +8,14 @@ class Chocolate extends Cake{
 
 	@Override
 	void accept(CakeVistor visitor) {
-		// TODO Auto-generated method stub
+		visitor.visitChocolate(this);
 		
 	}}
 
-class Vanilla extends Cake{
-
+class Vanilla extends Cake{ 
 	@Override
 	void accept(CakeVistor visitor) {
-		// TODO Auto-generated method stub
-		
+		visitor.visitVanilla(this); 
 	}}
 
 interface CakeVistor{
